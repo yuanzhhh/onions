@@ -6,7 +6,7 @@ Add access middleware for function
 ## Usage
 ```sh
 ## Installation
-$ npm install -g react-g-cli
+$ npm install onions --save
 
 ```
 ## Usage
