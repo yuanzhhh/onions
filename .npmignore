@@ -6,4 +6,5 @@
 .npmignore
 tslint.json
 tsconfig.json
+/.eslintrc.js
 *.log
