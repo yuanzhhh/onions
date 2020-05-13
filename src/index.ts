@@ -1,30 +1,36 @@
-export interface Onions {
-  (
+type Onions = (
     reducers: {
       [type: string]: (...args: any[]) => void | Function;
     },
-    beforeMiddleware: Array<Function>,
-    afterMiddleware: Array<Function>
-  ): {
+    beforeMiddleware: Function[],
+    afterMiddleware: Function[]
+  ) => {
     [type: string]: any;
-  },
-}
+  }
 
-export const compose = (middlewares: Array<Function>) =>
-  middlewares.reduce((a, b) => (...args: any) => a(b(...args)));
+const compose = (middlewares: Function[]): Function => {
+  if (middlewares.length === 0) return (next: any) => (info: any) => next(info);
 
-export let onions: Onions;
-onions = (reducers, beforeMiddleware, afterMiddleware) => {
+  if (middlewares.length === 1) return middlewares[0];
+
+  return middlewares.reduce((a, b) => (...args: any) => a(b(...args)));
+};
+
+const onions: Onions = (reducers, beforeMiddleware = [], afterMiddleware = []) => {
   const wrapBefore = compose(beforeMiddleware);
   const wrapAfter = compose(afterMiddleware);
 
   return Object.keys(reducers).reduce((resultBundle, item) => {
-    resultBundle[item] = (...args) => {
-      const beforeResult = wrapBefore(reducers[item])(...args);
-      const beforeCallback = typeof beforeResult === 'function' ?
-                             beforeResult : (() => {});
+    resultBundle[item] = (...args: any) => {
+      const wrapBeforeDone = wrapBefore(reducers[item]);
 
-      return wrapAfter(beforeCallback)(...args);
+      const beforeResult = wrapBeforeDone(...args);
+
+      const wrapAfterDone = wrapAfter(
+        typeof beforeResult === 'function' ? beforeResult : (info: any) => info,
+      );
+
+      return (typeof wrapAfterDone === 'function' ? wrapAfterDone : (info: any) => info)(...args);
     }
 
     return resultBundle;

@@ -2,19 +2,20 @@
   "name": "onions",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib"
-  },
+  "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "rebuild": "tsc",
+    "build": "npm run clean && npm run lint && npm run rebuild",
+    "lint": "eslint ./src/index.ts",
+    "lint-fix": "eslint ./src/index.ts --fix",
+    "clean": "rm -rf dist"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yuanzhhh/onions.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "evan yuanzh <evan.yuanzh@gmail.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/yuanzhhh/onions/issues"
@@ -22,6 +23,11 @@
   "homepage": "https://github.com/yuanzhhh/onions#readme",
   "devDependencies": {
     "@types/node": "^13.9.3",
-    "typescript": "^3.8.3"
-  }
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
+    "eslint": "^7.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "typescript": "^3.9.2"
+  },
+  "dependencies": {}
 }

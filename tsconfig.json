@@ -1,11 +1,11 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
+        "sourceMap": true,
+        "declaration": true,
         "skipDefaultLibCheck": false,
         "skipLibCheck": true,
         "experimentalDecorators": true,
-        "reactNamespace": "React",
-        "jsx": "react",
         "baseUrl": "./src",
         "moduleResolution": "node",
         "target": "es2017",
@@ -23,7 +23,7 @@
             "dom",
             "es5",
             "es6",
-            "es2018.promise",
+            "es2018.promise"
         ],
         "noUnusedLocals": true,
         "noUnusedParameters": true,
@@ -32,7 +32,7 @@
         }
     },
     "include": [
-        "./src",
+        "./src"
     ],
     "exclude": [
         "node_modules",
