@@ -20,7 +20,9 @@ const onions: Onions = (reducers, beforeMiddleware = [], afterMiddleware = []) =
   const wrapBefore = compose(beforeMiddleware);
   const wrapAfter = compose(afterMiddleware);
 
-  return Object.keys(reducers).reduce((resultBundle, item) => {
+  return Object.keys(reducers).reduce((pResultBundle, item) => {
+    const resultBundle = {...pResultBundle};
+
     resultBundle[item] = (...args: any) => {
       const wrapBeforeDone = wrapBefore(reducers[item]);
 

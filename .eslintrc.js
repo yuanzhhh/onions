@@ -18,6 +18,8 @@ module.exports = {
         "node": true
     },
     "extends": [
+        "eslint-config-airbnb",
+        "prettier",
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "prettier",
@@ -28,9 +30,7 @@ module.exports = {
         "project": "tsconfig.json",
         "sourceType": "module"
     },
-    "plugins": [
-        "@typescript-eslint"
-    ],
+    "plugins": ["@typescript-eslint", "prettier"],
     "rules": {
         "@typescript-eslint/adjacent-overload-signatures": "error",
         "@typescript-eslint/array-type": [
