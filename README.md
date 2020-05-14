@@ -14,27 +14,27 @@ $ npm install onions --save
 import onions from 'onions';
 
 const reducer = {
-  'addMessage': () => console.log('addMessage'),
-  'delMessage': () => console.log('delMessage'),
+    'addMessage': (a, b) => console.log('addMessage', a, b),
+    'delMessage': () => console.log('delMessage'),
 };
 
-const logBeginTime = (next: Function) => (args) => {
-  console.log('BeginTime', Date.now());
+const logBeginTime = (next) => (...args) => {
+    console.log('BeginTime', Date.now());
 
-  return next(args);
+    return next(...args);
 };
 
-const logEndTime = (next: Function) => (args) => {
-  console.log('EndTime', Date.now());
+const logEndTime = (next) => (...args) => {
+    console.log('EndTime', Date.now());
 
-  return next(args);
+    return next(...args);
 };
 
 const onionsWrap =  onions(reducer, [logBeginTime], [logEndTime])
 
-onionsWrap['addMessage']();
+onionsWrap['addMessage'](1, 2);
 
 // BeginTime 1589373681192
-// addMessage
+// addMessage 1 2
 // EndTime 1589373681518
 ```
