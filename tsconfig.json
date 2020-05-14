@@ -18,7 +18,7 @@
         "sourceMap": false,
         "allowJs": false,
         "rootDir": "src",
-        "outDir": "lib-esm",
+        "outDir": "lib",
         "lib": [
             "dom",
             "es5",

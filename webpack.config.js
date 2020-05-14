@@ -28,7 +28,9 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'dist'),
         filename: `onions${NODE_ENV === 'production' ? '.min' : ''}.js`,
-        library: 'Onions',
+        library: 'onions',
+        libraryExport: "default",
+        globalObject: 'this',
         libraryTarget: 'umd',
     },
     plugins: [

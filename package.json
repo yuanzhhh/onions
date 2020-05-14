@@ -7,16 +7,14 @@
     "types": "./lib/index.d.ts",
     "files": [
         "lib",
-        "es",
         "src",
         "dist"
     ],
     "scripts": {
         "prepare": "npm run clean && npm run lint && npm run tsc && npm run build",
         "build": "npm run build:develop && npm run build:pro",
-        "build:develop": "cross-env BABEL_ENV=commonjs NODE_ENV=development webpack",
-        "build:pro": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack",
-        "build:es": "cross-env BABEL_ENV=es babel ./src/index.ts --out-dir es",
+        "build:develop": "cross-env  NODE_ENV=development webpack",
+        "build:pro": "cross-env NODE_ENV=production webpack",
         "tsc": "tsc -m es6 --outDir lib",
         "lint": "eslint ./src/index.ts",
         "lint-fix": "eslint ./src/index.ts --fix",
@@ -32,7 +30,10 @@
         "type": "git",
         "url": "git+https://github.com/yuanzhhh/onions.git"
     },
-    "keywords": [],
+    "keywords": [
+        "onions",
+        "middleware"
+    ],
     "author": "evan yuanzh <evan.yuanzh@gmail.com>",
     "license": "ISC",
     "bugs": {
@@ -42,13 +43,15 @@
     "devDependencies": {
         "@babel/cli": "^7.8.4",
         "@babel/core": "^7.9.6",
-        "@babel/parser": "^7.9.6",
+        "@babel/plugin-transform-runtime": "^7.9.6",
         "@babel/preset-env": "^7.9.6",
+        "@babel/runtime-corejs2": "^7.9.6",
         "@babel/types": "^7.9.6",
         "@types/node": "^13.9.3",
         "@typescript-eslint/eslint-plugin": "^2.33.0",
         "@typescript-eslint/parser": "^2.33.0",
         "babel-loader": "^8.1.0",
+        "core-js": "^3.6.5",
         "cross-env": "^7.0.2",
         "eslint": "^7.0.0",
         "eslint-config-airbnb": "^18.1.0",
