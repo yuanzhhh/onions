@@ -30,7 +30,7 @@ const logEndTime = (next: Function) => (args) => {
   return next(info);
 };
 
-const onionsWrap =  onions(reducer, [logTime], [logEndTime])
+const onionsWrap =  onions(reducer, [logBeginTime], [logEndTime])
 
 onionsWrap['addMessage']();
 
