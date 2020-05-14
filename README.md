@@ -21,13 +21,13 @@ const reducer = {
 const logBeginTime = (next: Function) => (args) => {
   console.log('BeginTime', Date.now());
 
-  return next(info);
+  return next(args);
 };
 
 const logEndTime = (next: Function) => (args) => {
   console.log('EndTime', Date.now());
 
-  return next(info);
+  return next(args);
 };
 
 const onionsWrap =  onions(reducer, [logBeginTime], [logEndTime])
