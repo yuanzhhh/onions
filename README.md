@@ -3,9 +3,8 @@
 ## Intro
 Add access middleware for function
 
-## Usage
+## Install
 ```sh
-## Installation
 $ npm install onions --save
 
 ```
