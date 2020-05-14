@@ -2,7 +2,7 @@
     "name": "onions",
     "version": "1.0.8",
     "description": "",
-    "main": "./dist/index.js",
+    "main": "./dist/onions.min.js",
     "module": "./lib/index.js",
     "types": "./lib/index.d.ts",
     "files": [

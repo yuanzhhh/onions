@@ -10,6 +10,6 @@
   "author": "evan yuanzh <evan.yuanzh@gmail.com> (https://github.com/yuanzhhh)",
   "license": "ISC",
   "dependencies": {
-    "onions": "^1.0.6"
+    "onions": "^1.0.8"
   }
 }
