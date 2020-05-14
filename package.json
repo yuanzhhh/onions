@@ -3,11 +3,20 @@
     "version": "1.0.5",
     "description": "",
     "main": "./dist/index.js",
+    "module": "./lib/index.js",
+    "types": "./lib/index.d.ts",
+    "files": [
+        "lib",
+        "es",
+        "src",
+        "dist"
+    ],
     "scripts": {
         "prepare": "npm run clean && npm run lint && npm run tsc && npm run build",
         "build": "npm run build:develop && npm run build:pro",
         "build:develop": "cross-env BABEL_ENV=commonjs NODE_ENV=development webpack",
         "build:pro": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack",
+        "build:es": "cross-env BABEL_ENV=es babel ./src/index.ts --out-dir es",
         "tsc": "tsc -m es6 --outDir lib",
         "lint": "eslint ./src/index.ts",
         "lint-fix": "eslint ./src/index.ts --fix",
