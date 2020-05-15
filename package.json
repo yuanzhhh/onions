@@ -11,14 +11,15 @@
         "dist"
     ],
     "scripts": {
-        "prepare": "npm run clean && npm run lint && npm run tsc && npm run build",
+        "prepare": "npm run clean && npm run lint && npm run test && npm run tsc && npm run build",
         "build": "npm run build:develop && npm run build:pro",
         "build:develop": "cross-env  NODE_ENV=development webpack",
         "build:pro": "cross-env NODE_ENV=production webpack",
         "tsc": "tsc -m es6 --outDir lib",
         "lint": "eslint ./src/index.ts",
         "lint-fix": "eslint ./src/index.ts --fix",
-        "clean": "rimraf dist lib"
+        "clean": "rimraf dist lib",
+        "test": "jest"
     },
     "prettier": {
         "arrowParens": "always",
@@ -45,11 +46,14 @@
         "@babel/core": "^7.9.6",
         "@babel/plugin-transform-runtime": "^7.9.6",
         "@babel/preset-env": "^7.9.6",
+        "@babel/preset-typescript": "^7.9.0",
         "@babel/runtime-corejs2": "^7.9.6",
         "@babel/types": "^7.9.6",
+        "@types/jest": "^25.2.2",
         "@types/node": "^13.9.3",
         "@typescript-eslint/eslint-plugin": "^2.33.0",
         "@typescript-eslint/parser": "^2.33.0",
+        "babel-jest": "^26.0.1",
         "babel-loader": "^8.1.0",
         "core-js": "^2.6.11",
         "cross-env": "^7.0.2",
@@ -64,9 +68,14 @@
         "prettier": "^2.0.5",
         "rimraf": "^3.0.2",
         "terser-webpack-plugin": "^3.0.1",
+        "ts-jest": "^25.5.1",
         "typescript": "^3.9.2",
         "webpack": "^4.43.0",
         "webpack-cli": "^3.3.11"
+    },
+    "jest": {
+        "testRegex": "(/test/.*\\.spec\\.[tj]s)$",
+        "coverageProvider": "v8"
     },
     "dependencies": {}
 }
