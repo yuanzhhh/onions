@@ -31,9 +31,13 @@ describe('Onions test', () => {
 
 
   test('Test beforeMiddleware pipe', () => {
-    const befAdd = <T extends number>(next: UnknownFunction) => (a: T, b: T) => next(a +1, b + 1);
+    const befAdd1 = <T extends number>(next: UnknownFunction) => (a: T, b: T) => {
+      next(a +1, b + 1);
+    };
 
-    expect(onions(target, befAdd, [])(1, 2)).toBe(5)
+    const befAdd2 = <T extends number>(next: UnknownFunction) => (a: T, b: T) => next(a +1, b + 1);
+
+    expect(onions(target, [befAdd1, befAdd2], [])(1, 2)).toBe(7)
   });
 
   test('Test afterMiddleware pipe', () => {

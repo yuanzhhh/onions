@@ -15,9 +15,13 @@ const onions: Onions = (target, befores, afters) => {
   const wrapBefore = compose(befores);
   const wrapAfter = compose(afters);
 
-  return (...args: unknown[]) => {
-    const wrapBeforeDone = wrapBefore(target);
-    const targetResult = wrapBeforeDone(...args);
+  return (...args: unknown[]): unknown => {
+    let targetResult: unknown;
+
+    wrapBefore((...params: unknown[]) => {
+      targetResult = target(...params);
+    })(...args);
+
     wrapAfter((...params: unknown[]) => params)(...args);
 
     return targetResult;
