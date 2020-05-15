@@ -1,22 +1,18 @@
 const onions = require('onions');
 
-const reducer = {
-    'addMessage': (a, b) => console.log('addMessage', a, b),
-    'delMessage': () => console.log('delMessage'),
-};
+function target(a, b) {
+    return a + b;
+}
 
-const logBeginTime = (next) => (...args) => {
-    console.log('BeginTime', Date.now());
-
-    return next(...args);
-};
+const befAdd1 = (next) => (a, b) => { next(a + 1, b + 1) };
+const befAdd2 = (next) => (a, b) => next(a + 1, b + 1);
 
 const logEndTime = (next) => (...args) => {
     console.log('EndTime', Date.now());
 
-    return next(...args);
+    next(...args);
 };
 
-const onionsWrap =  onions(reducer, [logBeginTime], [logEndTime])
+const newTarget = onions(target, [befAdd1, befAdd2], logEndTime);
 
-onionsWrap['addMessage'](1, 2);
+console.log(newTarget(1, 2)); // 7

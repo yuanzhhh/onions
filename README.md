@@ -12,7 +12,7 @@ $ npm install onions --save
 ```ts | pure
 import onions from 'onions';
 
-function target(a: number, b: number): number {
+function target(a, b) {
     const result = a + b;
 
     console.log(result);
@@ -29,9 +29,9 @@ const logEndTime = (next) => (...args) => {
     next(...args);
 };
 
-const onionsWrap = onions(target, [befAdd1, befAdd2], logEndTime) // or [logEndTime]
+const newTarget = onions(target, [befAdd1, befAdd2], logEndTime) // or [logEndTime]
 
-onionsWrap['addMessage'](1, 2); // 7
+newTarget(1, 2); // 7
 > 7
 > EndTime 1589373681518
 
