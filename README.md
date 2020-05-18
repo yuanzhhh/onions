@@ -20,19 +20,18 @@ function target(a, b) {
     return result;
 }
 
-const befAdd1 = (next) => (a, b) => { next(a + 1, b + 1) };
-const befAdd2 = (next) => (a, b) => next(a + 1, b + 1);
+const before = (next) => (a, b) => next(a + 1, b + 1);
 
-const logEndTime = (next) => (...args) => {
-    console.log('EndTime', Date.now());
+const after = (next) => (...args) => {
+    console.log('After');
 
     next(...args);
 };
 
-const newTarget = onions(target, [befAdd1, befAdd2], logEndTime) // or [logEndTime]
+const newTarget = onions(target, [before], after) // or [after]
 
-newTarget(1, 2); // 7
-> 7
-> EndTime 1589373681518
+newTarget(1, 2); // 5
+> 5
+> After
 
 ```
