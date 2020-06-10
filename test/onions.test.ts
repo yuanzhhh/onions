@@ -23,14 +23,8 @@ describe('Onions test', () => {
     return (a + b);
   }
 
-  test('Onions result is AsyncFunction', () => {
-    expect(Object.prototype.toString.call(onions(asyncTarget, [beforeMiddleware], [afterMiddleware])).slice(8, -1)).toBe('AsyncFunction');
-
-    // expect(typeof onions(asyncTarget, [beforeMiddleware], [afterMiddleware])).toBe('function');
-    // expect(typeof onions(asyncTarget, [], [afterMiddleware])).toBe('AsyncFunction');
-    // expect(typeof onions(asyncTarget, [beforeMiddleware], [])).toBe('AsyncFunction');
-    // expect(typeof onions(asyncTarget, [], [])).toBe('AsyncFunction');
-    // expect(typeof onions(asyncTarget, beforeMiddleware, afterMiddleware)).toBe('AsyncFunction');
+  test('Target is AsyncFunction', () => {
+    expect(onions(asyncTarget, [beforeMiddleware], [afterMiddleware])(1, 2)).toBe('AsyncFunction');
   });
 
   test('Target normal execution for function[]', () =>
@@ -44,7 +38,6 @@ describe('Onions test', () => {
 
   test('Target normal execution for not has afterMiddleware', () =>
     expect(onions(target, beforeMiddleware, [])(1, 2)).toBe(3));
-
 
   test('Test beforeMiddleware pipe', () => {
     const befAdd1 = <T extends number>(next: UnknownFunction) => (a: T, b: T) => {

@@ -17,23 +17,24 @@ const onions: Onions = (target, befores, afters) => {
   const wrapAfter = compose(afters);
 
   return (...args: unknown[]): unknown => {
-    let targetResult: unknown;
+    return new Promise((resolve, reject) => {
+      wrapBefore(async (...params: unknown[]) => {
+        let targetResult: unknown;
+        if (targetType === 'Function') {
+          targetResult = target(...params);
+        } else if (['AsyncFunction', 'Promise', 'GeneratorFunction'].indexOf(targetType) !== -1) {
+          try {
+            targetResult = await target(...params);
+          } catch (err) {
+            reject(err);
+          }
+        } else {
+          throw new Error(target + ' is not function');
+        }
 
-    wrapBefore(async (...params: unknown[]) => {
-      if (targetType === 'Function') {
-        targetResult = target(...params);
-      } else if (['AsyncFunction', 'Promise', 'GeneratorFunction'].indexOf(targetType) !== -1) {
-        // TODO after结尾调用Promise的reject处理异常
-        targetResult = await target(...params);
-      } else {
-        throw new Error(target + ' is not function');
-      }
-
-      // TODO after结尾调用resolve
-      wrapAfter((...afterParams: unknown[]) => afterParams)(...params);
-    })(...args);
-
-    return targetResult;
+        wrapAfter(() => resolve(targetResult))(...params);
+      })(...args);
+    });
   }
 };
 
