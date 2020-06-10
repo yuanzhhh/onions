@@ -12,17 +12,26 @@ export const compose = (middlewares: Function[] | Function): Function => {
 
 type Onions = (target: UnknownFunction, befores: Function[] | Function, afters: Function[] | Function) => UnknownFunction;
 const onions: Onions = (target, befores, afters) => {
+  const targetType = Object.prototype.toString.call(target).slice(8, -1);
   const wrapBefore = compose(befores);
   const wrapAfter = compose(afters);
 
   return (...args: unknown[]): unknown => {
     let targetResult: unknown;
 
-    wrapBefore((...params: unknown[]) => {
-      targetResult = target(...params);
-    })(...args);
+    wrapBefore(async (...params: unknown[]) => {
+      if (targetType === 'Function') {
+        targetResult = target(...params);
+      } else if (['AsyncFunction', 'Promise', 'GeneratorFunction'].indexOf(targetType) !== -1) {
+        // TODO after结尾调用Promise的reject处理异常
+        targetResult = await target(...params);
+      } else {
+        throw new Error(target + ' is not function');
+      }
 
-    wrapAfter((...params: unknown[]) => params)(...args);
+      // TODO after结尾调用resolve
+      wrapAfter((...afterParams: unknown[]) => afterParams)(...params);
+    })(...args);
 
     return targetResult;
   }

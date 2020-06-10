@@ -17,6 +17,22 @@ describe('Onions test', () => {
     expect(typeof onions(target, beforeMiddleware, afterMiddleware)).toBe('function');
   });
 
+  async function asyncTarget(a: number, b: number) {
+    await Promise.resolve();
+
+    return (a + b);
+  }
+
+  test('Onions result is AsyncFunction', () => {
+    expect(Object.prototype.toString.call(onions(asyncTarget, [beforeMiddleware], [afterMiddleware])).slice(8, -1)).toBe('AsyncFunction');
+
+    // expect(typeof onions(asyncTarget, [beforeMiddleware], [afterMiddleware])).toBe('function');
+    // expect(typeof onions(asyncTarget, [], [afterMiddleware])).toBe('AsyncFunction');
+    // expect(typeof onions(asyncTarget, [beforeMiddleware], [])).toBe('AsyncFunction');
+    // expect(typeof onions(asyncTarget, [], [])).toBe('AsyncFunction');
+    // expect(typeof onions(asyncTarget, beforeMiddleware, afterMiddleware)).toBe('AsyncFunction');
+  });
+
   test('Target normal execution for function[]', () =>
     expect(onions(target, [beforeMiddleware], [afterMiddleware])(1, 2)).toBe(3));
 
