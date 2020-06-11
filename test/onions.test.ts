@@ -64,7 +64,7 @@ describe('Onions test', () => {
 
   test('middlewares async test', async () => {
     let testAfter = 0;
-    async function target(a, b) {
+    async function target(a: number, b: number): Promise<number> {
       const result = a + b;
 
       await Promise.resolve();
@@ -90,7 +90,7 @@ describe('Onions test', () => {
       next(a, b);
     };
 
-    const newTarget = onions<number, number>(target, [before1, before2, before3], after);
+    const newTarget = onions<Promise<number>>(target, [before1, before2, before3], after);
 
     expect(await newTarget(1, 2)).toBe(9);
     expect(testAfter).toBe(9);

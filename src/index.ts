@@ -1,6 +1,5 @@
-export type UnknownFunction = (...args: unknown[]) => unknown;
+export type UnknownFunction<T = any> = (...args: unknown[]) => T;
 export type MiddlewareType = Function[] | Function;
-export type Target<T, U> = (...args: T[]) => U | Promise<U>;
 
 export const compose = (middlewares: MiddlewareType): Function => {
   if (typeof middlewares === 'function') return middlewares;
@@ -12,16 +11,15 @@ export const compose = (middlewares: MiddlewareType): Function => {
   return middlewares.reduce((a, b) => (...args: unknown[]) => a(b(...args)));
 };
 
-export default function onions<T = unknown, U = unknown>(target: Target<T, U>, befores: MiddlewareType, afters: MiddlewareType): Target<T, U> {
-  const targetType = Object.prototype.toString.call(target).slice(8, -1);
+export default function onions<T = any>(target: UnknownFunction<T>, befores: MiddlewareType, afters: MiddlewareType): UnknownFunction<T> {
+  const targetType: string = Object.prototype.toString.call(target).slice(8, -1);
   const wrapBefore = compose(befores);
   const wrapAfter = compose(afters);
+  let targetResult: unknown;
 
-  return function(...args) {
-    const wrapf = (resolve?: (value: U) => void, reject?: (error: Error) => void): U | Promise<U> => {
-      let targetResult: unknown;
-
-      const lastBeforeWare = async (...params: T[]): Promise<void> => {
+  const newTarget: UnknownFunction<T> = function(...args) {
+    const wrapf = (resolve?: (value: unknown) => void, reject?: (error: Error) => void): unknown => {
+      wrapBefore(async (...params: unknown[]): Promise<void> => {
         if (['AsyncFunction', 'Promise', 'GeneratorFunction'].includes(targetType)) {
           try {
             targetResult = await target.call(this, ...params);
@@ -32,14 +30,14 @@ export default function onions<T = unknown, U = unknown>(target: Target<T, U>, b
           targetResult = target.call(this, ...params);
         }
 
-        wrapAfter(() => resolve ? resolve(targetResult as U) : targetResult)(...params);
-      }
+        wrapAfter(() => resolve ? resolve(targetResult) : targetResult)(...params);
+      })(...args);
 
-      wrapBefore(lastBeforeWare)(...args);
-
-      return targetResult as U;
+      return targetResult;
     }
 
-    return targetType === 'Function' ? wrapf() : new Promise(wrapf);
+    return (targetType === 'Function' ? wrapf() : new Promise(wrapf)) as T;
   }
+
+  return newTarget;
 };
