@@ -1,6 +1,7 @@
 export type UnknownFunction = (...args: unknown[]) => unknown;
+export type MiddlewareType = Function[] | Function;
 
-export const compose = (middlewares: Function[] | Function): Function => {
+export const compose = (middlewares: MiddlewareType): Function => {
   if (typeof middlewares === 'function') return middlewares;
 
   if (middlewares.length === 0) return (next: UnknownFunction) => (...args: unknown[]) => next(...args);
@@ -10,32 +11,34 @@ export const compose = (middlewares: Function[] | Function): Function => {
   return middlewares.reduce((a, b) => (...args: unknown[]) => a(b(...args)));
 };
 
-type Onions = (target: UnknownFunction, befores: Function[] | Function, afters: Function[] | Function) => UnknownFunction;
-const onions: Onions = (target, befores, afters) => {
+export default function onions<T = unknown, U = unknown>(target: (...args: T[]) => U | Promise<U>, befores: MiddlewareType, afters: MiddlewareType): Function {
   const targetType = Object.prototype.toString.call(target).slice(8, -1);
   const wrapBefore = compose(befores);
   const wrapAfter = compose(afters);
 
-  return (...args: unknown[]): unknown => {
-    return new Promise((resolve, reject) => {
-      wrapBefore(async (...params: unknown[]) => {
-        let targetResult: unknown;
-        if (targetType === 'Function') {
-          targetResult = target(...params);
-        } else if (['AsyncFunction', 'Promise', 'GeneratorFunction'].indexOf(targetType) !== -1) {
+  return function(...args: T[]): U | Promise<U> {
+    const wrapf = (resolve?: (value: U) => void, reject?: (error: Error) => void): U | Promise<U> => {
+      let targetResult: unknown;
+
+      const lastBeforeWare = async (...params: T[]): Promise<void> => {
+        if (['AsyncFunction', 'Promise', 'GeneratorFunction'].indexOf(targetType) !== -1) {
           try {
-            targetResult = await target(...params);
+            targetResult = await target.call(this, ...params);
           } catch (err) {
-            reject(err);
+            reject!(err);
           }
         } else {
-          throw new Error(target + ' is not function');
+          targetResult = target.call(this, ...params);
         }
 
-        wrapAfter(() => resolve(targetResult))(...params);
-      })(...args);
-    });
+        wrapAfter(() => resolve ? resolve(targetResult as U) : targetResult)(...params);
+      }
+
+      wrapBefore(lastBeforeWare)(...args);
+
+      return targetResult as U;
+    }
+
+    return targetType === 'Function' ? wrapf() : new Promise(wrapf);
   }
 };
-
-export default onions;

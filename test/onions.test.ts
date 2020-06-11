@@ -17,16 +17,6 @@ describe('Onions test', () => {
     expect(typeof onions(target, beforeMiddleware, afterMiddleware)).toBe('function');
   });
 
-  async function asyncTarget(a: number, b: number) {
-    await Promise.resolve();
-
-    return (a + b);
-  }
-
-  test('Target is AsyncFunction', () => {
-    expect(onions(asyncTarget, [beforeMiddleware], [afterMiddleware])(1, 2)).toBe('AsyncFunction');
-  });
-
   test('Target normal execution for function[]', () =>
     expect(onions(target, [beforeMiddleware], [afterMiddleware])(1, 2)).toBe(3));
 
@@ -57,5 +47,52 @@ describe('Onions test', () => {
     onions((valueObject: TestValue) => valueObject.value++, [], afterMiddleware)(testValue);
 
     expect(testValue).toEqual({value: 3});
+  });
+
+  test('Target is AsyncFunction', async () => {
+    async function asyncTarget(a: number, b: number) {
+      await Promise.resolve();
+
+      return (a + b);
+    }
+
+    const asyncTargetWrapOnions = onions(asyncTarget, [beforeMiddleware], [afterMiddleware]);
+
+    expect(Object.prototype.toString.call(asyncTargetWrapOnions(1, 2)).slice(8, -1)).toBe('Promise');
+    expect(await asyncTargetWrapOnions(1, 2)).toBe(3);
+  });
+
+  test('middlewares async test', async () => {
+    let testAfter = 0;
+    async function target(a, b) {
+      const result = a + b;
+
+      await Promise.resolve();
+
+      return result;
+    }
+
+    const before1 = (next) => (a, b) => {
+      next(a + 1, b + 1);
+    };
+    const before2 = (next) => async (a, b) => {
+      await Promise.resolve();
+
+      next(a + 1, b + 1);
+    };
+    const before3 = (next) => (a, b) => {
+      next(a + 1, b + 1)
+    };
+
+    const after = (next) => (a, b) => {
+      testAfter = a + b;
+
+      next(a, b);
+    };
+
+    const newTarget = onions(target, [before1, before2, before3], after);
+
+    expect(await newTarget(1, 2)).toBe(9);
+    expect(testAfter).toBe(9);
   });
 });
