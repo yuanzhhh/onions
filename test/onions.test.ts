@@ -62,7 +62,41 @@ describe('Onions test', () => {
     expect(await asyncTargetWrapOnions(1, 2)).toBe(3);
   });
 
-  test('middlewares async test', async () => {
+  const before1 = (next) => async (a, b) => {
+    next(a + 1, b + 1);
+  };
+
+  const before2 = (next) => async (a, b) => {
+    await Promise.resolve();
+
+    next(a + 1, b + 1);
+  };
+
+  const before3 = (next) => (a, b) => {
+    next(a + 1, b + 1)
+  };
+
+  test('Middlewares async test', async () => {
+    let testAfter = 0;
+    function target(a: number, b: number): number {
+      const result = a + b;
+
+      return result;
+    }
+
+    const after = (next) => (a, b) => {
+      testAfter = a + b;
+
+      next(a, b);
+    };
+
+    const newTarget = onions<number>(target, [before1, before2, before3], after);
+
+    expect(await newTarget(1, 2)).toBe(9);
+    expect(testAfter).toBe(9);
+  });
+
+  test('Target async test', async () => {
     let testAfter = 0;
     async function target(a: number, b: number): Promise<number> {
       const result = a + b;
@@ -71,18 +105,6 @@ describe('Onions test', () => {
 
       return result;
     }
-
-    const before1 = (next) => (a, b) => {
-      next(a + 1, b + 1);
-    };
-    const before2 = (next) => async (a, b) => {
-      await Promise.resolve();
-
-      next(a + 1, b + 1);
-    };
-    const before3 = (next) => (a, b) => {
-      next(a + 1, b + 1)
-    };
 
     const after = (next) => (a, b) => {
       testAfter = a + b;
