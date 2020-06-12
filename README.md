@@ -12,15 +12,15 @@ $ npm install onions --save
 ```ts | pure
 import onions from 'onions';
 
-function target(a, b) {
-    const result = a + b;
+const before1 = (next) => (a, b) => next(a + 1, b + 1);
 
-    console.log(result);
+const before2 = (next) => async (a, b) => {
+    await Promise.resolve();
 
-    return result;
-}
+    next(a + 1, b + 1);
+};
 
-const before = (next) => (a, b) => next(a + 1, b + 1);
+const before3 = (next) => (a, b) => next(a + 1, b + 1);
 
 const after = (next) => (...args) => {
     console.log('After');
@@ -28,10 +28,21 @@ const after = (next) => (...args) => {
     next(...args);
 };
 
-const newTarget = onions(target, [before], after) // or [after]
+async function target(a, b) {
+    const result = a + b;
 
-newTarget(1, 2); // 5
-> 5
+    await Promise.resolve();
+
+    return result;
+}
+
+(async () => {
+  const newTarget = onions(target, [before1, before2, before3], after) // after or [after]
+
+  await newTarget(1, 2); // 9
+})();
+
+> 9
 > After
 
 ```
