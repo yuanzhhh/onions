@@ -7,6 +7,7 @@ const getFunType = (target: Function): string => Object.prototype.toString.call(
 
 export const compose = (middlewares: MiddlewareType): [boolean, Function] => {
   let isEffect = false;
+
   if (typeof middlewares === 'function') return [filterEffectFunction(getFunType(middlewares())), middlewares];
 
   if (middlewares.length === 0) return [isEffect, (next: UnknownFunction) => (...args: unknown[]) => next(...args)];
