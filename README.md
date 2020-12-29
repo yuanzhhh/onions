@@ -1,7 +1,7 @@
 # Onions
 
 ## Intro
-Add access middleware for function
+Add function middleware in before or after
 
 ## Install
 ```sh
