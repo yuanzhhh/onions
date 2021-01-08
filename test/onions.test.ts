@@ -17,34 +17,34 @@ describe('Onions test', () => {
     expect(typeof onions(target, beforeMiddleware, afterMiddleware)).toBe('function');
   });
 
-  test('Target normal execution for function[]', () =>
-    expect(onions(target, [beforeMiddleware], [afterMiddleware])(1, 2)).toBe(3));
+  test('Target normal execution for function[]', async () =>
+    expect(await onions(target, [beforeMiddleware], [afterMiddleware])(1, 2)).toBe(3));
 
-  test('Target normal execution for function', () =>
-    expect(onions(target, beforeMiddleware, afterMiddleware)(1, 2)).toBe(3));
+  test('Target normal execution for function', async () =>
+    expect(await onions(target, beforeMiddleware, afterMiddleware)(1, 2)).toBe(3));
 
-  test('Target normal execution for not has beforeMiddleware', () =>
-    expect(onions(target, [], afterMiddleware)(1, 2)).toBe(3));
+  test('Target normal execution for not has beforeMiddleware', async () =>
+    expect(await onions(target, [], afterMiddleware)(1, 2)).toBe(3));
 
-  test('Target normal execution for not has afterMiddleware', () =>
-    expect(onions(target, beforeMiddleware, [])(1, 2)).toBe(3));
+  test('Target normal execution for not has afterMiddleware', async () =>
+    expect(await onions(target, beforeMiddleware, [])(1, 2)).toBe(3));
 
-  test('Test beforeMiddleware pipe', () => {
+  test('Test beforeMiddleware pipe', async () => {
     const befAdd1 = <T extends number>(next: UnknownFunction) => (a: T, b: T) => {
       next(a +1, b + 1);
     };
 
     const befAdd2 = <T extends number>(next: UnknownFunction) => (a: T, b: T) => next(a +1, b + 1);
 
-    expect(onions(target, [befAdd1, befAdd2], [])(1, 2)).toBe(7)
+    expect(await onions(target, [befAdd1, befAdd2], [])(1, 2)).toBe(7)
   });
 
-  test('Test afterMiddleware pipe', () => {
+  test('Test afterMiddleware pipe', async () => {
     type TestValue = {value: number};
     const afterMiddleware = <T extends TestValue>(next: UnknownFunction) => (a: T) => next(a.value++);
     const testValue: TestValue = {value: 1};
 
-    onions((valueObject: TestValue) => valueObject.value++, [], afterMiddleware)(testValue);
+    await onions((valueObject: TestValue) => valueObject.value++, [], afterMiddleware)(testValue);
 
     expect(testValue).toEqual({value: 3});
   });
@@ -90,7 +90,7 @@ describe('Onions test', () => {
       next(a, b);
     };
 
-    const newTarget = onions<number>(target, [before1, before2, before3], after);
+    const newTarget = onions(target, [before1, before2, before3], after);
 
     expect(await newTarget(1, 2)).toBe(9);
     expect(testAfter).toBe(9);
@@ -112,7 +112,7 @@ describe('Onions test', () => {
       next(a, b);
     };
 
-    const newTarget = onions<Promise<number>>(target, [before1, before2, before3], after);
+    const newTarget = onions(target, [before1, before2, before3], after);
 
     expect(await newTarget(1, 2)).toBe(9);
     expect(testAfter).toBe(9);
