@@ -1,8 +1,8 @@
-import onions, { UnknownFunction } from '../src';
+import onions, { UnknownFun } from '../src';
 
 describe('Onions test', () => {
-  const beforeMiddleware = (next: UnknownFunction) => (...args: unknown[]) => next(...args);
-  const afterMiddleware = (next: UnknownFunction) => (...args: unknown[]) => next(...args);
+  const beforeMiddleware = (next: UnknownFun) => (...args: unknown[]) => next(...args);
+  const afterMiddleware = (next: UnknownFun) => (...args: unknown[]) => next(...args);
 
   function target<A extends number>(a: A, b: A): A;
   function target(a: number, b: number) {
@@ -30,18 +30,18 @@ describe('Onions test', () => {
     expect(await onions(target, beforeMiddleware, [])(1, 2)).toBe(3));
 
   test('Test beforeMiddleware pipe', async () => {
-    const befAdd1 = <T extends number>(next: UnknownFunction) => (a: T, b: T) => {
+    const befAdd1 = <T extends number>(next: UnknownFun) => (a: T, b: T) => {
       next(a +1, b + 1);
     };
 
-    const befAdd2 = <T extends number>(next: UnknownFunction) => (a: T, b: T) => next(a +1, b + 1);
+    const befAdd2 = <T extends number>(next: UnknownFun) => (a: T, b: T) => next(a +1, b + 1);
 
     expect(await onions(target, [befAdd1, befAdd2], [])(1, 2)).toBe(7)
   });
 
   test('Test afterMiddleware pipe', async () => {
     type TestValue = {value: number};
-    const afterMiddleware = <T extends TestValue>(next: UnknownFunction) => (a: T) => next(a.value++);
+    const afterMiddleware = <T extends TestValue>(next: UnknownFun) => (a: T) => next(a.value++);
     const testValue: TestValue = {value: 1};
 
     await onions((valueObject: TestValue) => valueObject.value++, [], afterMiddleware)(testValue);
