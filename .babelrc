@@ -1,12 +1,15 @@
 {
     "presets": [
+        "@babel/typescript",
         [
             "@babel/preset-env",
             {
                 "useBuiltIns": "usage",
                 "modules": false,
                 "targets": {
-                    "node": "current"
+                    "browsers": [
+                        "ie >= 11"
+                    ]
                 }
             }]
     ],
