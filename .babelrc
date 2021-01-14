@@ -4,7 +4,7 @@
         [
             "@babel/preset-env",
             {
-                "useBuiltIns": "usage",
+                "loose": true,
                 "modules": false,
                 "targets": {
                     "browsers": [
@@ -14,14 +14,7 @@
             }]
     ],
     "plugins": [
-        [
-            "@babel/plugin-transform-runtime", {
-                "helpers": false,
-                "regenerator": false,
-                "useESModules": false,
-                "corejs": 2
-            }
-        ]
+        "@babel/plugin-proposal-object-rest-spread"
     ],
     "comments": false
 }

@@ -8,7 +8,7 @@
         "experimentalDecorators": true,
         "baseUrl": "./src",
         "moduleResolution": "node",
-        "target": "es2017",
+        "target": "es2015",
         "module": "esNext",
         "noImplicitThis": false,
         "strict": false,
