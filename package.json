@@ -2,23 +2,20 @@
     "name": "onions",
     "version": "4.0.3",
     "description": "",
-    "main": "./dist/onions.min.js",
+    "main": "./lib/index.js",
     "module": "./lib/index.js",
     "types": "./lib/index.d.ts",
     "files": [
         "lib",
-        "src",
-        "dist"
+        "src"
     ],
     "scripts": {
         "prepare": "npm run clean && npm run lint && npm run test && npm run build",
-        "build": "npm run tsc && npm run build:develop && npm run build:pro",
-        "build:develop": "cross-env NODE_ENV=development webpack",
-        "build:pro": "cross-env NODE_ENV=production webpack",
+        "build": "tsc",
         "tsc": "tsc",
         "lint": "eslint ./src/index.ts",
         "lint-fix": "eslint ./src/index.ts --fix",
-        "clean": "rimraf dist lib",
+        "clean": "rimraf lib",
         "test": "jest"
     },
     "prettier": {
