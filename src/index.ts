@@ -17,7 +17,7 @@ export default function onions(target: UnknownFun | MiddlewareFun[], befores: Mi
 
     return function (...args) {
       const wrapf = (resolve: (value: unknown) => void) =>
-        wrapTarget(async (...params: unknown[]) => resolve([...params]))(...args);
+        wrapTarget((...params: unknown[]) => resolve([...params]))(...args);
 
       return new Promise(wrapf);
     };
