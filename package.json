@@ -1,6 +1,6 @@
 {
     "name": "onions",
-    "version": "4.0.2",
+    "version": "4.0.3",
     "description": "",
     "main": "./dist/onions.min.js",
     "module": "./lib/index.js",
