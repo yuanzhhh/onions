@@ -117,4 +117,10 @@ describe('Onions test', () => {
     expect(await newTarget(1, 2)).toBe(9);
     expect(testAfter).toBe(9);
   });
+
+  test('Target is array test', async () => {
+    const newTarget = onions([before1, before2, before3]);
+
+    expect(await newTarget(1, 2)).toStrictEqual([4, 5]);
+  });
 });
