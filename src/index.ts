@@ -25,7 +25,7 @@ export default function onions(target: UnknownFun, befores: Middleware, afters: 
         try {
           result = await target.call(this, ...params);
         } catch (err) {
-          reject!(err);
+          reject(err);
         };
 
         wrapAfter(() => resolve(result))(...params);

@@ -15,7 +15,7 @@
         "build": "npm run build:develop && npm run build:pro",
         "build:develop": "cross-env  NODE_ENV=development webpack",
         "build:pro": "cross-env NODE_ENV=production webpack",
-        "tsc": "tsc -m es6 --outDir lib",
+        "tsc": "tsc",
         "lint": "eslint ./src/index.ts",
         "lint-fix": "eslint ./src/index.ts --fix",
         "clean": "rimraf dist lib",

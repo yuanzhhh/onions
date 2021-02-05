@@ -1,46 +1,27 @@
 {
-    "compileOnSave": false,
     "compilerOptions": {
         "sourceMap": true,
-        "declaration": true,
-        "skipDefaultLibCheck": false,
-        "skipLibCheck": true,
-        "experimentalDecorators": true,
-        "baseUrl": "./src",
-        "moduleResolution": "node",
         "target": "es2015",
-        "module": "esNext",
-        "noImplicitThis": false,
-        "strict": false,
-        "strictNullChecks": true,
-        "noImplicitAny": false,
-        "allowSyntheticDefaultImports": true,
-        "sourceMap": false,
-        "allowJs": false,
-        "rootDir": "src",
+        "module": "commonjs",
+        "declaration": true,
         "outDir": "lib",
-        "lib": [
-            "dom",
-            "es5",
-            "es6",
-            "es7",
-            "es2018.promise"
-        ],
+        "rootDir": "src",
+        "strict": false,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "paths": {
-            "@/*" :["./*"]
-        }
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "moduleResolution": "node",
+        "typeRoots": [
+            "./node_modules/@types"
+        ],
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": false
     },
     "include": [
-        "./src"
+        "src/**/*.ts"
     ],
     "exclude": [
-        "node_modules",
-        "build",
-        "dist",
-        "__tests__",
-        "dll"
-    ],
-    "types": ["typePatches"]
+        "node_modules/**"
+    ]
 }
