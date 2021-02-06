@@ -11,17 +11,8 @@ export const compose = (middlewares: Middleware): Function => {
   return middlewares.reduce((a, b) => (...args): UnknownFun => a(b(...args)));
 };
 
-export default function onions (target: UnknownFun | MiddlewareFun[], befores: Middleware = [], afters: Middleware = []): OnionsFun {
-  if (Array.isArray(target)) {
-    const wrapTarget = compose(target);
-
-    return function (...args): Promise<unknown> {
-      const wrapf = (resolve: (value: unknown) => void): UnknownFun =>
-        wrapTarget((...params: unknown[]) => resolve([...params]))(...args);
-
-      return new Promise(wrapf);
-    };
-  };
+export default function onions (target: UnknownFun | MiddlewareFun[] | undefined, befores: Middleware = [], afters: Middleware = []): OnionsFun {
+  if (Array.isArray(target)) return onions(undefined, target);
 
   const wrapBefore = compose(befores);
   const wrapAfter = compose(afters);
@@ -29,12 +20,14 @@ export default function onions (target: UnknownFun | MiddlewareFun[], befores: M
   return function (...args): Promise<unknown> {
     const wrapf = (resolve: (value: unknown) => void, reject?: (error: Error) => void): void =>
       wrapBefore(async (...params: unknown[]): Promise<void> => {
-        let result: unknown;
+        let result: unknown = [...params];
 
-        try {
-          result = await target.call(this, ...params);
-        } catch (err) {
-          reject(err);
+        if (Object.prototype.toString.call(target).substr(-9, 8) === 'Function') {
+          try {
+            result = await target.call(this, ...params);
+          } catch (err) {
+            reject(err);
+          };
         };
 
         wrapAfter(() => resolve(result))(...params);
