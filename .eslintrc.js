@@ -12,129 +12,18 @@ https://github.com/typescript-eslint/tslint-to-eslint-config/blob/master/docs/FA
 Happy linting! 💖
 */
 module.exports = {
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
+    "extends": [
+        'standard',
+        "plugin:@typescript-eslint/recommended",
+    ],
     "env": {
         "browser": true,
         "es6": true,
         "node": true
     },
-    "extends": [
-        "eslint-config-airbnb",
-        "prettier",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking",
-        "prettier",
-        "prettier/@typescript-eslint"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "project": "tsconfig.json",
-        "sourceType": "module"
-    },
-    "plugins": ["@typescript-eslint", "prettier"],
     "rules": {
-        "@typescript-eslint/adjacent-overload-signatures": "error",
-        "@typescript-eslint/array-type": [
-            "error",
-            {
-                "default": "array"
-            }
-        ],
-        "@typescript-eslint/ban-types": "off",
-        "@typescript-eslint/class-name-casing": "error",
-        "@typescript-eslint/consistent-type-assertions": "off",
-        "@typescript-eslint/dot-notation": "off",
-        "@typescript-eslint/interface-name-prefix": "off",
-        "@typescript-eslint/member-ordering": "off",
-        "@typescript-eslint/no-empty-function": "error",
-        "@typescript-eslint/no-empty-interface": "error",
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-misused-new": "error",
-        "@typescript-eslint/no-namespace": "off",
-        "@typescript-eslint/no-parameter-properties": "off",
-        "@typescript-eslint/no-unused-expressions": "error",
-        "@typescript-eslint/no-use-before-define": "off",
-        "@typescript-eslint/no-var-requires": "error",
-        "@typescript-eslint/prefer-for-of": "error",
-        "@typescript-eslint/prefer-function-type": "error",
-        "@typescript-eslint/prefer-namespace-keyword": "off",
-        "@typescript-eslint/no-misused-promises": [
-          "error",
-          {
-            "checksVoidReturn": false
-          }
-        ],
-        "@typescript-eslint/triple-slash-reference": [
-            "error",
-            {
-                "path": "always",
-                "types": "prefer-import",
-                "lib": "always"
-            }
-        ],
-        "@typescript-eslint/unified-signatures": "off",
-        "brace-style": [
-            "off",
-            "off"
-        ],
-        "camelcase": "off",
-        "comma-dangle": "off",
-        "complexity": "off",
-        "constructor-super": "error",
-        "eqeqeq": [
-            "error",
-            "smart"
-        ],
-        "guard-for-in": "off",
-        "id-blacklist": "off",
-        "id-match": "off",
-        "import/order": "off",
-        "jsdoc/check-alignment": "off",
-        "jsdoc/check-indentation": "off",
-        "jsdoc/newline-after-description": "off",
-        "max-classes-per-file": "off",
-        "new-parens": "error",
-        "no-bitwise": "off",
-        "no-caller": "error",
-        "no-cond-assign": "off",
-        "no-console": "error",
-        "no-debugger": "error",
-        "no-empty": "error",
-        "no-eval": "error",
-        "no-fallthrough": "off",
-        "no-invalid-this": "off",
-        "no-new-wrappers": "error",
-        "no-shadow": [
-            "error",
-            {
-                "hoist": "all"
-            }
-        ],
-        "no-throw-literal": "error",
-        "no-trailing-spaces": "error",
-        "no-undef-init": "error",
-        "no-underscore-dangle": "off",
-        "no-unsafe-finally": "error",
-        "no-unused-labels": "error",
-        "no-var": "error",
-        "object-shorthand": "error",
-        "one-var": [
-            "error",
-            "never"
-        ],
-        "prefer-arrow/prefer-arrow-functions": "off",
-        "prefer-const": "off",
-        "quote-props": "off",
-        "radix": "off",
-        "spaced-comment": [
-            "error",
-            "always",
-            {
-                "markers": [
-                    "/"
-                ]
-            }
-        ],
-        "use-isnan": "error",
-        "valid-typeof": "off"
+        'semi': ["error", "always"],
     }
 };
