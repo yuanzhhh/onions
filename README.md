@@ -1,4 +1,5 @@
 # Onions
+![npm](https://img.shields.io/npm/dm/onions)
 
 ## Intro
 Add function middleware in before or after
