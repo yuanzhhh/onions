@@ -1,6 +1,6 @@
 {
     "name": "onions",
-    "version": "4.1.3",
+    "version": "4.1.4",
     "description": "Lightweight function middleware combiner (onion model) for TypeScript / JavaScript",
     "main": "./lib/index.js",
     "module": "./lib/index.js",
