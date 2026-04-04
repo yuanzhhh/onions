@@ -5,7 +5,7 @@ export type OnionsFun = (...args: unknown[]) => Promise<unknown>;
 
 export const compose = (middlewares: Middleware): Function => {
   if (typeof middlewares === 'function') return middlewares;
-  if (middlewares.length === 0) return (next: UnknownFun) => (...args: unknown[]): unknown => next(...args);
+  if (middlewares.length === 0) return (next: UnknownFun) => function (...args: unknown[]): unknown { return next.call(this, ...args); };
   if (middlewares.length === 1) return middlewares[0];
 
   return middlewares.reduce((a, b) => (...args): UnknownFun => a(b(...args)));
@@ -18,21 +18,43 @@ export default function onions (target: UnknownFun | MiddlewareFun[] | undefined
   const wrapAfter = compose(afters);
 
   return function (...args): Promise<unknown> {
-    const wrapf = (resolve: (value: unknown) => void, reject?: (error: Error) => void): void =>
-      wrapBefore(async (...params: unknown[]): Promise<void> => {
-        let result: unknown = [...params];
+    let result: unknown;
+    let resolveInner: () => void;
+    let rejectInner: (err: unknown) => void;
+    const innerDone = new Promise<void>((resolve, reject) => {
+      resolveInner = resolve;
+      rejectInner = reject;
+    });
 
-        if (Object.prototype.toString.call(target).substr(-9, 8) === 'Function') {
-          try {
-            result = await target.call(this, ...params);
-          } catch (err) {
-            reject(err);
-          };
-        };
+    const innerCallback = async (...params: unknown[]): Promise<void> => {
+      try {
+        result = [...params];
 
-        wrapAfter(() => resolve(result))(...params);
-      })(...args);
+        if (typeof target === 'function') {
+          result = await target.call(this, ...params);
+        }
 
-    return new Promise(wrapf);
+        let afterCalled = false;
+        const afterNext: UnknownFun = () => { afterCalled = true; return undefined; };
+        await Promise.resolve(wrapAfter(afterNext).call(this, ...params));
+
+        if (afterCalled) resolveInner();
+      } catch (err) {
+        rejectInner(err);
+      }
+    };
+
+    return new Promise((resolve, reject) => {
+      try {
+        const maybePromise = wrapBefore(innerCallback).call(this, ...args);
+
+        Promise.all([
+          Promise.resolve(maybePromise),
+          innerDone
+        ]).then(() => resolve(result)).catch(reject);
+      } catch (err) {
+        reject(err);
+      }
+    });
   };
 };

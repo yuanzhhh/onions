@@ -123,4 +123,103 @@ describe('Onions test', () => {
 
     expect(await newTarget(1, 2)).toStrictEqual([4, 5]);
   });
+
+  test('Target error rejects and does not run after', async () => {
+    let afterRan = false;
+    const failingTarget = () => { throw new Error('target boom'); };
+    const trackingAfter = (next: UnknownFun) => (...args: unknown[]) => {
+      afterRan = true;
+      next(...args);
+    };
+
+    await expect(onions(failingTarget, [], [trackingAfter])(1, 2)).rejects.toThrow('target boom');
+    expect(afterRan).toBe(false);
+  });
+
+  test('Async target error rejects and does not run after', async () => {
+    let afterRan = false;
+    const failingTarget = async () => { throw new Error('async target boom'); };
+    const trackingAfter = (next: UnknownFun) => (...args: unknown[]) => {
+      afterRan = true;
+      next(...args);
+    };
+
+    await expect(onions(failingTarget, [], [trackingAfter])(1, 2)).rejects.toThrow('async target boom');
+    expect(afterRan).toBe(false);
+  });
+
+  test('Sync before middleware error rejects', async () => {
+    const failingBefore = () => () => { throw new Error('before boom'); };
+
+    await expect(onions(target, [failingBefore], [])(1, 2)).rejects.toThrow('before boom');
+  });
+
+  test('After middleware error rejects', async () => {
+    const failingAfter = () => () => { throw new Error('after boom'); };
+
+    await expect(onions(target, [], [failingAfter])(1, 2)).rejects.toThrow('after boom');
+  });
+
+  test('Async after middleware error rejects', async () => {
+    const asyncFailingAfter = (next: UnknownFun) => async (...args: unknown[]) => {
+      next(...args);
+      await Promise.resolve();
+      throw new Error('async after boom');
+    };
+
+    await expect(onions(target, [], [asyncFailingAfter])(1, 2)).rejects.toThrow('async after boom');
+  });
+
+  test('Async before post-next error rejects: fire-and-forget', async () => {
+    const asyncFailingBefore = (next: UnknownFun) => async (...args: unknown[]) => {
+      next(...args);
+      await Promise.resolve();
+      throw new Error('async before boom');
+    };
+
+    await expect(onions(target, [asyncFailingBefore], [])(1, 2)).rejects.toThrow('async before boom');
+  });
+
+  test('Async before post-next error rejects: with await next', async () => {
+    const asyncFailingBefore = (next: UnknownFun) => async (...args: unknown[]) => {
+      await next(...args);
+      throw new Error('async before boom');
+    };
+
+    await expect(onions(target, [asyncFailingBefore], [])(1, 2)).rejects.toThrow('async before boom');
+  });
+
+  test('After middleware that does not call next leaves Promise pending', async () => {
+    const blockingAfter = () => () => { /* does not call next */ };
+    const raceTimeout = new Promise((resolve) => setTimeout(() => resolve('timeout'), 50));
+
+    const result = await Promise.race([
+      onions(target, [], [blockingAfter])(1, 2),
+      raceTimeout
+    ]);
+
+    expect(result).toBe('timeout');
+  });
+
+  test('this context is passed to target, before, and after', async () => {
+    const contexts: unknown[] = [];
+
+    const myTarget = function (this: unknown) { contexts.push(this); return 42; };
+    const myBefore = (next: UnknownFun) => function (this: unknown, ...args: unknown[]) {
+      contexts.push(this);
+      return next.call(this, ...args);
+    };
+    const myAfter = (next: UnknownFun) => function (this: unknown, ...args: unknown[]) {
+      contexts.push(this);
+      return next.call(this, ...args);
+    };
+
+    const obj = { run: onions(myTarget, [myBefore], [myAfter]) };
+    await obj.run();
+
+    expect(contexts).toHaveLength(3);
+    expect(contexts[0]).toBe(obj);
+    expect(contexts[1]).toBe(obj);
+    expect(contexts[2]).toBe(obj);
+  });
 });

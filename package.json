@@ -1,7 +1,7 @@
 {
     "name": "onions",
     "version": "4.1.3",
-    "description": "",
+    "description": "Lightweight function middleware combiner (onion model) for TypeScript / JavaScript",
     "main": "./lib/index.js",
     "module": "./lib/index.js",
     "types": "./lib/index.d.ts",
@@ -10,7 +10,7 @@
         "src"
     ],
     "scripts": {
-        "prepare": "npm run clean && npm run lint && npm run test && npm run build",
+        "prepare": "pnpm run clean && pnpm run lint && pnpm run test && pnpm run build",
         "build": "tsc",
         "tsc": "tsc",
         "lint": "eslint ./src/index.ts",
@@ -30,7 +30,13 @@
     },
     "keywords": [
         "onions",
-        "middleware"
+        "middleware",
+        "compose",
+        "before",
+        "after",
+        "decorator",
+        "wrapper",
+        "typescript"
     ],
     "author": "evan yuanzh <evan.yuanzh@gmail.com>",
     "license": "ISC",
@@ -59,10 +65,6 @@
         "rimraf": "^3.0.2",
         "ts-jest": "^25.5.1",
         "typescript": "^4.1.3"
-    },
-    "jest": {
-        "testRegex": "(/test/.*\\.spec\\.[tj]s)$",
-        "coverageProvider": "v8"
     },
     "dependencies": {}
 }
